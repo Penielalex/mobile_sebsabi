@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -17,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gebeya.sebsab_mobile.R
+import com.gebeya.sebsab_mobile.data.network.entity.AuthRequest
 import com.gebeya.sebsab_mobile.ui.theme.poppinsFamily
 import com.gebeya.sebsab_mobile.viewmodel.LoginPageViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +58,8 @@ fun LoginPage(
 
     navToSignUpPage:()->Unit,
     scope: CoroutineScope,
-    snackbarHostState:SnackbarHostState
+    snackbarHostState:SnackbarHostState,
+    navToHomePage:() -> Unit
 ){
 
 
@@ -186,22 +190,56 @@ fun LoginPage(
                 loginPageViewModel.passwordError.value.isEmpty()
 
             ){
+
                 scope.launch{
-                    snackbarHostState.showSnackbar("User Logged-In")
+                    try{
+                        loginPageViewModel.isloading.value = true
+
+                        val loginResult = loginPageViewModel.login(AuthRequest(
+                            username = email.value,
+                            password = password.value
+                        ))
+                        if ( loginResult== "User logged In") {
+                            navToHomePage()
+                            snackbarHostState.showSnackbar("User Logged in")
+
+                        } else {
+                            snackbarHostState.showSnackbar("Wrong password and email.")
+                        }
+                    }finally {
+                        loginPageViewModel.isloading.value = false
+                    }
                 }
+
+//                navToHomePage()
+//                scope.launch{
+//                    snackbarHostState.showSnackbar("User Logged-In")
+//                }
+
             }
         },
 
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 40.dp, end = 40.dp),
-        ) {
-            Text(text = "Sign Up",
+            enabled = !loginPageViewModel.isloading.value
+        ) {if (loginPageViewModel.isloading.value) {
+            // Show circular progress indicator when loading
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .size(20.dp)
+                    .padding(end = 8.dp),
+                color = Color.White
+            )
+        } else {
+
+            Text(
+                text = "Log In",
                 fontWeight = FontWeight.Medium,
                 fontFamily = poppinsFamily,
                 fontSize = 12.sp,
-                color = Color.White)
-
+                color = Color.White
+            )}
         }
 
         Text(modifier = Modifier.clickable { navToSignUpPage() },
