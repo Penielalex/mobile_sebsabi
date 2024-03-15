@@ -72,6 +72,13 @@ dependencies {
 
     val nav_version="2.7.6"
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation("androidx.compose.material:material:1.6.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.4.0")
+    implementation ("androidx.activity:activity-ktx:1.3.1")
+    implementation ("androidx.compose.runtime:runtime-livedata:1.2.0-alpha03")
+
 
     val hilt_version = "2.44"
     implementation("com.google.dagger:hilt-android:$hilt_version")
@@ -90,6 +97,7 @@ dependencies {
     kapt("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     implementation ("androidx.compose.material:material-icons-extended:1.1.0")
+
 
 
 }
