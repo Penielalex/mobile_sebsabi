@@ -7,6 +7,7 @@ import com.gebeya.sebsab_mobile.data.network.entity.Token
 import com.gebeya.sebsab_mobile.data.network.entity.UserResponse
 import com.gebeya.sebsab_mobile.data.network.entity.Worker
 import com.gebeya.sebsab_mobile.data.network.entity.WorkerUpdate
+import com.google.gson.JsonObject
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -57,6 +58,11 @@ interface WorkerApi {
         @Header("Authorization") token: String
     ): List<Map<String, Any>>
 
+    @GET("/api/core/gig-worker/view/forms/completed")
+    suspend fun getAllFormByCompleted(
+        @Header("Authorization") token: String
+    ): List<Map<String, Any>>
+
     @GET("/api/core/gig-worker/view/forms/applied")
     suspend fun getAllFormsByApplied(
         @Header("Authorization") token: String
@@ -72,6 +78,11 @@ interface WorkerApi {
     suspend fun submitResponse(@Body userResponse: UserResponse,
                                @Header("Authorization") token: String):Map<String, Any>
 
-
+    @GET("/api/core/gig-worker/view/search/form")
+    fun searchForms(
+        @Query("title") title: String,
+        @Query("size") size: Int = 10,
+        @Header("Authorization") token: String
+    ): Response<JsonObject>
 
 }

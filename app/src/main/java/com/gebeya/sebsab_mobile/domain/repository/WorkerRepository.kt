@@ -27,5 +27,8 @@ interface WorkerRepository {
 
     suspend fun UpdateProfile(workerUpdate: WorkerUpdate): Response<WorkerUpdate>
 
+    suspend fun searchForms(title: String): List<Map<String, Any>>?
+    suspend fun getCompleted(): List<Map<String, Any>>
+
 
 }

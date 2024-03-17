@@ -28,7 +28,7 @@ object NetworkModule {
             .writeTimeout(timeoutInSeconds, TimeUnit.SECONDS)
             .build()
         return Retrofit.Builder()
-            .baseUrl("http://192.168.12.138:8080")
+            .baseUrl("http://192.168.101.7:8080")
             .addConverterFactory(GsonConverterFactory.create(GsonBuilder().create()))
             .client(okHttpClient)
             .build()

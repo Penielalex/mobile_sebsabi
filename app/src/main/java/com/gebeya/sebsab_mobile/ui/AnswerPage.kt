@@ -265,10 +265,10 @@ Spacer(modifier = Modifier.height(20.dp))
                                                     text = "${option["optionText"]}",
                                                     modifier = Modifier.weight(1f)
                                                 )
-                                                Text(
-                                                    text = "id  ${option["id"]}",
-                                                    modifier = Modifier.weight(1f)
-                                                )
+//                                                Text(
+//                                                    text = "id  ${option["id"]}",
+//                                                    modifier = Modifier.weight(1f)
+//                                                )
                                             }
                                         }
                                     }

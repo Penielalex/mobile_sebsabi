@@ -3,6 +3,7 @@ package com.gebeya.sebsab_mobile.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gebeya.sebsab_mobile.data.network.entity.FormModel
@@ -22,6 +23,7 @@ class HomePageViewModel @Inject constructor(
 ):ViewModel() {
 
     var formList: List<FormModel> by mutableStateOf(listOf())
+    val contentListLiveData: MutableLiveData<List<Map<String, Any>>?> = MutableLiveData()
     var form: FormModel? by mutableStateOf(null)
     val isloading= mutableStateOf(false)
     private val _result: MutableStateFlow<String?> = MutableStateFlow(null)
@@ -37,6 +39,20 @@ class HomePageViewModel @Inject constructor(
             when(result){
                 is Response.Fail -> println("Network Error: ${result.errorMessage}")
                 is Response.Success -> formList = result.data ?: listOf()
+                else -> {}
+            }
+        }
+    }
+
+    fun searchForms(title: String) {
+        viewModelScope.launch {
+            val contentList = workerRepository.searchForms(title)
+
+            if (contentList != null) {
+                // Handle the content list
+                contentListLiveData.postValue(contentList)
+            } else {
+                contentListLiveData.postValue(null)
             }
         }
     }

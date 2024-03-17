@@ -18,11 +18,13 @@ class JobsPageViewModel @Inject constructor(
     init {
         getApplied()
         getClaimed()
+        getCompleted()
 
     }
 
     val formsState = MutableStateFlow<List<Map<String, Any>>>(emptyList())
     val formsApplied = MutableStateFlow<List<Map<String, Any>>>(emptyList())
+    val formsCompleted = MutableStateFlow<List<Map<String, Any>>>(emptyList())
     private val _selectedForm = MutableStateFlow<Map<String, Any>?>(null)
     val selectedForm: StateFlow<Map<String, Any>?> = _selectedForm
     var formProgress = mutableStateOf<Long?>(null)
@@ -38,6 +40,17 @@ class JobsPageViewModel @Inject constructor(
         }
     }
 
+    fun getCompleted() {
+        viewModelScope.launch {
+            try {
+                val formsList = workerRepository.getCompleted()
+                formsCompleted.value = formsList
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
     fun getProgress(formId: Long){
         viewModelScope.launch{
             try{
@@ -46,6 +59,7 @@ class JobsPageViewModel @Inject constructor(
             when(result){
                 is Response.Fail -> println("Network Error: ${result.errorMessage}")
                 is Response.Success -> formProgress.value = result.data
+                else -> {}
             }
             }catch (e: Exception) {
                 e.printStackTrace()
