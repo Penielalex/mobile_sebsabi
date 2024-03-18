@@ -7,6 +7,7 @@ import com.gebeya.sebsab_mobile.data.network.entity.Token
 import com.gebeya.sebsab_mobile.data.network.entity.UserResponse
 import com.gebeya.sebsab_mobile.data.network.entity.Worker
 import com.gebeya.sebsab_mobile.data.network.entity.WorkerUpdate
+import com.google.gson.JsonObject
 
 interface WorkerRepository {
 
@@ -29,6 +30,10 @@ interface WorkerRepository {
 
     suspend fun searchForms(title: String): List<Map<String, Any>>?
     suspend fun getCompleted(): List<Map<String, Any>>
+
+    suspend fun checkBalance(): JsonObject?
+
+
 
 
 }

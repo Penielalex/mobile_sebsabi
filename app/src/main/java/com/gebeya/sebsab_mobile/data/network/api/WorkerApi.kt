@@ -85,4 +85,9 @@ interface WorkerApi {
         @Header("Authorization") token: String
     ): Response<JsonObject>
 
+    @GET("api/core/gig-worker/check/balance")
+     suspend fun checkBalanceForGigWoker(
+        @Header("Authorization") token: String
+     ): JsonObject
+
 }

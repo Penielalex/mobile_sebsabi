@@ -11,6 +11,7 @@ import com.gebeya.sebsab_mobile.data.network.entity.WorkerUpdate
 import com.gebeya.sebsab_mobile.domain.repository.PreferencesRepository
 import com.gebeya.sebsab_mobile.domain.repository.Response
 import com.gebeya.sebsab_mobile.domain.repository.WorkerRepository
+import com.google.gson.JsonObject
 import retrofit2.HttpException
 import java.io.IOException
 import java.net.SocketTimeoutException
@@ -154,6 +155,30 @@ class WokerRepositoryImpl(
         } catch (e: Throwable) {
             return emptyList()
         }
+    }
+
+    override suspend fun checkBalance(): JsonObject? {
+        try {
+            preferencesRepository.getAuthenticationToken()?.let {
+                val token = it.token
+                val forms = workerApi.checkBalanceForGigWoker("Bearer ${it.token}")
+
+                println("aaaaaaaaaaaaaaaaaa ${token}")
+
+                return forms
+            }
+            return null;
+        } catch (e: IOException) {
+            println("IOException occurred: ${e.message}")
+            return null
+        } catch (e: HttpException) {
+            println("http occurred: ${e.message}")
+            return null
+        } catch (e: Throwable) {
+            println("throwabel occurred: ${e.message}")
+            return null
+        }
+
     }
 
     override suspend fun getApplied(): List<Map<String, Any>> {

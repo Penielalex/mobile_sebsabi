@@ -7,16 +7,17 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Badge
-import androidx.compose.material.BadgedBox
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.AccountBalanceWallet
 import androidx.compose.material.icons.rounded.ArrowBack
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
@@ -45,6 +46,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.gebeya.sebsab_mobile.ui.components.BottomNavItem
 import com.gebeya.sebsab_mobile.ui.theme.poppinsFamily
+import com.gebeya.sebsab_mobile.viewmodel.HomePageViewModel
 import com.gebeya.sebsab_mobile.viewmodel.SignUpPageViewModel
 
 @SuppressLint("SuspiciousIndentation")
@@ -60,12 +62,14 @@ import com.gebeya.sebsab_mobile.viewmodel.SignUpPageViewModel
 
 
     val signUpPageViewModel = hiltViewModel<SignUpPageViewModel>()
+    val homePageViewModel = hiltViewModel<HomePageViewModel>()
     val navController = rememberNavController()
     val canNavBack = remember{ mutableStateOf(false)}
     val currentScreen =  navController.currentBackStackEntryAsState().value?.destination?.route
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val isDarkTheme = isSystemInDarkTheme()
+    val showDialog = remember { mutableStateOf(false) }
     
     val items = listOf(
         BottomNavItem.Home,
@@ -132,23 +136,36 @@ import com.gebeya.sebsab_mobile.viewmodel.SignUpPageViewModel
                         }
                     },
                     actions = {
-                        if(currentScreen == "Home" || currentScreen == "Jobs"){
+                        if(currentScreen == "Home" || currentScreen == "Jobs" || currentScreen == "Profile"){
+                            IconButton(
+                                onClick = {
+                                    homePageViewModel.checkBalanceForGigWorker()
+                                    val balance=homePageViewModel.balance
+                                    print("yayyyyy ${balance.value}")
+                                    showDialog.value = true },
+                                modifier = Modifier.size(48.dp)
+                            ) {
                                 Icon(
-                                    Icons.Filled.Search,
-                                    contentDescription = "Search",
-                                    tint=Color(0xFF909300)
+                                    imageVector = Icons.Filled.AccountBalanceWallet,
+                                    contentDescription = "Wallet",
+                                    tint = Color(0xFF909300)
                                 )
                             }
-                        if(currentScreen!= "Sign Up" && currentScreen!= "Log In"){
-                            BadgedBox(modifier = Modifier
-                                .clickable { }
-                                .padding(18.dp),badge = { Badge { Text("2", color = Color.White, fontSize = 10.sp,) } }) {
-                                Icon(
-                                    Icons.Filled.Notifications,
-                                    contentDescription = "Notification",
-                                    tint=Color(0xFF909300)
-                                )
-                            }}
+                            }
+                        if (showDialog.value) {
+                            AlertDialog(
+                                onDismissRequest = { showDialog.value = false },
+                                confirmButton = {
+                                    TextButton( onClick = { showDialog.value = false }) {
+                                        Text("OK")
+                                    }
+                                },
+                                title = { Text("Your Balance") },
+                                text = { Text("${homePageViewModel.balance.value} ETB") }
+                            )
+                        }
+
+
                     }
                 )}
             }

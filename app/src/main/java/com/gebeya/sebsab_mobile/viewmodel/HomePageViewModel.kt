@@ -1,5 +1,6 @@
 package com.gebeya.sebsab_mobile.viewmodel
 
+import android.annotation.SuppressLint
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -28,6 +29,9 @@ class HomePageViewModel @Inject constructor(
     val isloading= mutableStateOf(false)
     private val _result: MutableStateFlow<String?> = MutableStateFlow(null)
     val result: StateFlow<String?> get() = _result
+    var balance = mutableStateOf("")
+
+
     init {
        getFormsByStatus()
     }
@@ -55,6 +59,17 @@ class HomePageViewModel @Inject constructor(
                 contentListLiveData.postValue(null)
             }
         }
+    }
+
+     @SuppressLint("SuspiciousIndentation")
+     fun checkBalanceForGigWorker() {
+         viewModelScope.launch{
+        val response = workerRepository.checkBalance()
+             println("ere oooo $response")
+             if (response != null) {
+                 balance.value = response.get("amount").asString
+             }
+         }
     }
     fun getFormById(formId: Int): FormModel? {
         return formList.firstOrNull { it.id == formId }
